@@ -58,7 +58,6 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
         _velocity = _body.velocity;
-        Debug.Log(_velocity.x);
         playerMoveKeyboard();
 
 #region Coyote Counter
