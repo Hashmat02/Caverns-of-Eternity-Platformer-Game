@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour {
     private bool _isWallJumping = false;
     private float _wallStickCounter;
 
-    private PhysicsMaterial2D _material;
     private Rigidbody2D _body;
     private CollisionCheck _collisionCheck;
 
@@ -52,7 +51,7 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
-        _wantJump |= Input.GetButtonDown("Jump") && !_collisionCheck.isWall;
+        _wantJump |= Input.GetButtonDown("Jump") && _collisionCheck.isGround;
         _wantWallJump |= Input.GetButtonDown("Jump") && (_collisionCheck.isWall && !_collisionCheck.isGround);
     }
 

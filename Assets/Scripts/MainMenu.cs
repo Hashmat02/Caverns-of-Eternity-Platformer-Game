@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Mainmenue : MonoBehaviour
+public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
@@ -13,13 +13,13 @@ public class Mainmenue : MonoBehaviour
     {
         Application.Quit();
     }
-    public void GoToSettingsMenue()
+    public void GoToSettingsMenu()
     {
-        SceneManager.LoadScene("SettingsMenue");
+        SceneManager.LoadScene("SettingsMenu");
     }
-    public void MainMenue()
+    public void GoToMainMenu()
     {
-        SceneManager.LoadScene("Game Menue");
+        SceneManager.LoadScene("GameMenu");
     }
 
 

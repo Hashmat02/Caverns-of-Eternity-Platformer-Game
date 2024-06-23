@@ -8,11 +8,14 @@ public class CollisionCheck : MonoBehaviour {
     public float friction { get; private set; }
     public Vector2 contactNormal { get; private set; }
     [SerializeField, Range(0, 90)] private float _maxAngleWall = 0; // in degrees
+    [SerializeField, Range(0, 90)] private float _maxAngleGround = 0; // in degrees
     private PhysicsMaterial2D _material;
     private float _minWallNormalX;
+	private float _minGroundNormalY;
 
     void Update() {
         _minWallNormalX = Mathf.Cos(_maxAngleWall * Mathf.PI / 180.0f);
+        _minGroundNormalY = Mathf.Cos(_maxAngleGround * Mathf.PI / 180.0f);
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
@@ -35,15 +38,12 @@ public class CollisionCheck : MonoBehaviour {
         for (int i = 0; i < collision.contactCount; i++) {
             contactNormal = collision.GetContact(i).normal;
             isWall |= Mathf.Abs(contactNormal.x) >= _minWallNormalX;
+			isGround |= Mathf.Abs(contactNormal.y) >= _minGroundNormalY;
         }
-        isGround = collision.collider.CompareTag("Ground");
     }
 
     void getFriction(Collision2D collision) {
         _material = collision.rigidbody?.sharedMaterial;
-        friction = 0;
-        if (_material) {
-            friction = _material.friction;
-        }
+		friction = _material ? _material.friction : 0;
     }
 }
