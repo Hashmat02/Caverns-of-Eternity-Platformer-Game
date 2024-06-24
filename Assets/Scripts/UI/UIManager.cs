@@ -61,5 +61,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = status ? 0 : 1; // Pause or resume the game
     }
 
+    
+
     #endregion
 }
