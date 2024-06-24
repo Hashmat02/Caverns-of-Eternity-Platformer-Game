@@ -7,13 +7,20 @@ public class CrystalsCounter : MonoBehaviour {
     private Text _text;
     [SerializeField] private string _label = "Crystals: ";
 
+	void OnEnable() {
+		CrystalsManager.onCountChange += updateText;
+	}
+
 	void Start() {
 		_text = GetComponent<Text>();
-		CrystalsManager.onCountChange += updateText;
 		updateText();
 	}
         
     public void updateText() {
 		_text.text = _label + CrystalsManager.crystalCount;
+	}
+
+	void OnDisable() {
+		CrystalsManager.onCountChange -= updateText;
 	}
 }
