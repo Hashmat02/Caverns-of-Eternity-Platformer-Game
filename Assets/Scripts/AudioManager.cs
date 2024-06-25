@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour {
 	public static AudioManager instance;
-	private bool _muted = false;
+	public bool muted = false;
 
 	[SerializeField] private AudioMixer _mixer;
 
@@ -56,8 +56,14 @@ public class AudioManager : MonoBehaviour {
     	volumes[(int)Volumes.MASTER] = DataPersistenceManager.loadFloat(Constants.MIXER_MASTER);
     	volumes[(int)Volumes.MUSIC] = DataPersistenceManager.loadFloat(Constants.MIXER_MUSIC);
     	volumes[(int)Volumes.SFX] = DataPersistenceManager.loadFloat(Constants.MIXER_SFX);
-		_muted = DataPersistenceManager.loadInt(Constants.MIXER_MUTED_ALL) != 0;
+		muted = DataPersistenceManager.loadInt(Constants.MIXER_MUTED_ALL) != 0;
 
+		if (muted) {
+			setMixerVolume(Constants.MIXER_MASTER, 0.0f);
+			setMixerVolume(Constants.MIXER_MUSIC, 0.0f);
+			setMixerVolume(Constants.MIXER_SFX, 0.0f);
+			return;
+		}
 		setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		setMixerVolume(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 		setMixerVolume(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
@@ -68,20 +74,23 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void muteToggleAll() {
-		if (!_muted) {
+		if (!muted) {
 			setMixerVolume(Constants.MIXER_MASTER, 0.0f);
 			setMixerVolume(Constants.MIXER_MUSIC, 0.0f);
 			setMixerVolume(Constants.MIXER_SFX, 0.0f);
-			_muted = true;
+			muted = true;
 			return;
 		}
 		setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		setMixerVolume(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 		setMixerVolume(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
-		_muted = false;
+		muted = false;
 	}
 
 	public void updateVolume(Volumes group, float value) {
+		if (muted) {
+			return;
+		}
 		switch (group) {
 		case Volumes.MASTER:
 			volumes[(int)Volumes.MASTER] = value;
@@ -104,7 +113,7 @@ public class AudioManager : MonoBehaviour {
 		DataPersistenceManager.save(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		DataPersistenceManager.save(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 		DataPersistenceManager.save(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
-		DataPersistenceManager.save(Constants.MIXER_MUTED_ALL, _muted ? 1 : 0);
+		DataPersistenceManager.save(Constants.MIXER_MUTED_ALL, muted ? 1 : 0);
 		SceneManager.sceneLoaded -= updateBgAudio;
 	}
 }

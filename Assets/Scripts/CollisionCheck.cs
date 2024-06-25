@@ -13,7 +13,7 @@ public class CollisionCheck : MonoBehaviour {
     private float _minWallNormalX;
 	private float _minGroundNormalY;
 
-    void Update() {
+    void Start() {
         _minWallNormalX = Mathf.Cos(_maxAngleWall * Mathf.PI / 180.0f);
         _minGroundNormalY = Mathf.Cos(_maxAngleGround * Mathf.PI / 180.0f);
     }

@@ -29,9 +29,12 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Vector2 _wallJumpLeap = new Vector2(10.7f, 10.0f);
     [SerializeField, Range(0.0f, 1.0f)] private float _wallStickTime = 0.5f;
 
-    private bool _wantWallJump = false;
+    // private bool _wantWallJump = false;
     private bool _isWallJumping = false;
     private float _wallStickCounter;
+	
+	private delegate void DesiredJump();
+	private DesiredJump desiredJump;
 
     private Rigidbody2D _body;
     private CollisionCheck _collisionCheck;
@@ -51,8 +54,16 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
-        _wantJump |= Input.GetButtonDown("Jump") && _collisionCheck.isGround;
-        _wantWallJump |= Input.GetButtonDown("Jump") && (_collisionCheck.isWall && !_collisionCheck.isGround);
+        // _wantJump |= Input.GetButtonDown("Jump") && _collisionCheck.isGround;
+        // _wantWallJump |= Input.GetButtonDown("Jump") && (_collisionCheck.isWall && !_collisionCheck.isGround);
+		if (_collisionCheck.isGround) {
+			desiredJump = jump;
+		} else if (_collisionCheck.isWall) {
+			desiredJump = wallJump;
+		} else {
+			desiredJump = null;
+		}
+		_wantJump |= Input.GetButtonDown("Jump");
     }
 
     void FixedUpdate() {
@@ -77,16 +88,17 @@ public class PlayerController : MonoBehaviour {
 
 #region Jump
         if (_wantJump) {
-            jump();
-            _wantWallJump = false;
+			desiredJump?.Invoke();
+            // _wantWallJump = false;
+			_wantJump = false;
         }
 #endregion
 
 #region Wall Jump
-        if (_wantWallJump) {
-            wallJump();
-            _wantJump = false;
-        }
+        // if (_wantWallJump) {
+        //     wallJump();
+        //     _wantJump = false;
+        // }
 #endregion
 
 #region Wall Slide
@@ -126,7 +138,7 @@ public class PlayerController : MonoBehaviour {
         _coyoteCounter = 0.0f;
         float jumpVel = Mathf.Sqrt(-2f * Physics2D.gravity.y * _jumpHeight);
         _velocity = new Vector2(_velocity.x, jumpVel);
-        _wantJump = false;
+        // _wantJump = false;
     }
 
     void wallJump() {
@@ -135,7 +147,7 @@ public class PlayerController : MonoBehaviour {
         } else if (_collisionCheck.contactNormal.x == _moveX) {
             _velocity = new Vector2(_wallJumpLeap.x * _collisionCheck.contactNormal.x, _wallJumpLeap.y);
         }
-        _wantWallJump = false;
+        // _wantWallJump = false;
         _isWallJumping = true;
     }
 
