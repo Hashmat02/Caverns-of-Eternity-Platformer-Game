@@ -17,18 +17,17 @@ public class VolumeSettings : MonoBehaviour {
 	void Awake() {
 		foreach (var vol in _volumes) {
 			vol.slider.onValueChanged.AddListener((value) => {
-				vol.text.text = vol.label + value;
-				AudioManager.instance.updateVolume(vol.mixerGroup, value);
+				updateVolume(vol, value);
 			});
 		}
 	}
 
 	void OnEnable() {
+		_mute.SetIsOnWithoutNotify(AudioManager.instance.muted);
 		foreach (var vol in _volumes) {
-			vol.slider.value = AudioManager.instance.volumes[(int)vol.mixerGroup];
-			updateVolume(vol, vol.slider.value);
+			vol.text.text = vol.label + vol.slider.value;
+			vol.slider.SetValueWithoutNotify(AudioManager.instance.volumes[(int)vol.mixerGroup]);
 		}
-		_mute.isOn = AudioManager.instance.muted;
 	}
 	
 	void updateVolume(VolumeConfig vol, float value) {
@@ -36,7 +35,7 @@ public class VolumeSettings : MonoBehaviour {
 		AudioManager.instance.updateVolume(vol.mixerGroup, value);
 	}
 
-	void OnDisable() {
+	void OnDestroy() {
 		foreach (var vol in _volumes) {
 			vol.slider.onValueChanged.RemoveAllListeners();
 		}

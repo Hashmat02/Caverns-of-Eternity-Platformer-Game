@@ -60,11 +60,9 @@ public class AudioManager : MonoBehaviour {
 
 		if (muted) {
 			setMixerVolume(Constants.MIXER_MASTER, 0.0f);
-			setMixerVolume(Constants.MIXER_MUSIC, 0.0f);
-			setMixerVolume(Constants.MIXER_SFX, 0.0f);
-			return;
+		} else {
+			setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		}
-		setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		setMixerVolume(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 		setMixerVolume(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
     }
@@ -74,34 +72,30 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void muteToggleAll() {
-		if (!muted) {
+		muted = !muted;
+		if (muted) {
 			setMixerVolume(Constants.MIXER_MASTER, 0.0f);
-			setMixerVolume(Constants.MIXER_MUSIC, 0.0f);
-			setMixerVolume(Constants.MIXER_SFX, 0.0f);
-			muted = true;
 			return;
 		}
 		setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 		setMixerVolume(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 		setMixerVolume(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
-		muted = false;
 	}
 
 	public void updateVolume(Volumes group, float value) {
+		volumes[(int)group] = value;
 		if (muted) {
 			return;
 		}
+
 		switch (group) {
 		case Volumes.MASTER:
-			volumes[(int)Volumes.MASTER] = value;
 			setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
 			break;
 		case Volumes.MUSIC:
-			volumes[(int)Volumes.MUSIC] = value;
 			setMixerVolume(Constants.MIXER_MUSIC, volumes[(int)Volumes.MUSIC]);
 			break;
 		case Volumes.SFX:
-			volumes[(int)Volumes.SFX] = value;
 			setMixerVolume(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
 			break;
 		default:
