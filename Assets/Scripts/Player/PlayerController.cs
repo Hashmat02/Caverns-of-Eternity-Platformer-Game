@@ -37,13 +37,17 @@ public class PlayerController : MonoBehaviour {
 	private DesiredJump desiredJump;
 
     private Rigidbody2D _body;
-    private CollisionCheck _collisionCheck;
-
-    private const float DEF_GRAVITY_SCALE = 1.0f;
+    private PlatformCollision _collisionCheck;
 
     void Awake() {
         _body = GetComponent<Rigidbody2D>();
-        _collisionCheck = GetComponent<CollisionCheck>();
+		if (!_body) {
+			ErrorHandling.throwError("No Rigidbody2D component found.");
+		}
+        _collisionCheck = GetComponent<PlatformCollision>();
+		if (!_collisionCheck) {
+			ErrorHandling.throwError("No PlatformCollision script found.");
+		}
     }
 
     void Start() {
@@ -108,7 +112,7 @@ public class PlayerController : MonoBehaviour {
 #endregion
 
         // adjust gravity scale
-        _body.gravityScale = _body.velocity.y == 0 ? DEF_GRAVITY_SCALE 
+        _body.gravityScale = _body.velocity.y == 0 ? Constants.DEF_GRAVITY_SCALE 
             : _body.velocity.y > 0 ? _riseMult
             : _fallMult;
 

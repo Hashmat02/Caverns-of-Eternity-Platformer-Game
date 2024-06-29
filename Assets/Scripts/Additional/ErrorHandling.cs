@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public static class ErrorHandling {
-	public static void logError(
+	public static void throwError(
 		string error, 
 		[CallerLineNumber] int lineNumber = 0,
 		[CallerMemberName] string funcName = null,

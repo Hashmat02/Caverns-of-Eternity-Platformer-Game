@@ -5,16 +5,28 @@ public class UIManager : MonoBehaviour
 {
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverScreen;
-    [SerializeField] private AudioClip gameOverSound;
 
     [Header("Pause")]
     [SerializeField] private GameObject pauseScreen;
 
-    private void Awake()
-    {
-        gameOverScreen.SetActive(false);
-        pauseScreen.SetActive(false);
-    }
+	public static UIManager instance;
+	public delegate void OnGameOver();
+	public static event OnGameOver onGameOver;
+
+	void Awake() {
+		if (instance && instance != this) {
+			Destroy(this);
+			return;
+		}
+		instance = this;
+
+		if (!gameOverScreen) {
+			ErrorHandling.throwError("No GameOverPanel found.");
+		}
+		if (!pauseScreen) {
+			ErrorHandling.throwError("No PausePanel found.");
+		}
+	}
 
     private void Update()
     {
@@ -29,26 +41,9 @@ public class UIManager : MonoBehaviour
 
     public void GameOver()
     {
+		Time.timeScale = 0f;
         gameOverScreen.SetActive(true);
-        // SoundManager.Instance.PlaySound(gameOverSound);
-    }
-
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void MainMenu()
-    {
-        SceneManager.LoadScene("Game Menu");
-    }
-
-    public void Quit()
-    {
-        Application.Quit();
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // Exits play mode (will only be executed in the editor)
-#endif
+		onGameOver?.Invoke();
     }
 
     #endregion
@@ -60,8 +55,6 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(status);
         Time.timeScale = status ? 0 : 1; // Pause or resume the game
     }
-
-    
 
     #endregion
 }

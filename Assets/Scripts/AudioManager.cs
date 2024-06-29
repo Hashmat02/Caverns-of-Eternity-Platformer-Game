@@ -26,15 +26,26 @@ public class AudioManager : MonoBehaviour {
 
 	void Awake() {
 		if (instance && instance != this) {
-			Destroy(this);
+			Destroy(gameObject);
 			return;
 		}
 		instance = this;
+
+		if (!_mixer) {
+			ErrorHandling.throwError("No Audio Mixer found.");
+		}
+		if (!_bgSource) {
+			ErrorHandling.throwError("No Background Audio Source found.");
+		}
+		if (_bgAudioClips.Length == 0) {
+			ErrorHandling.throwError("No Background Audio Clips found.");
+		}
 		volumes = Helpers.populateArray(volumes, 100.0f);
 	}
 	
 	void OnEnable() {
 		SceneManager.sceneLoaded += updateBgAudio;
+		UIManager.onGameOver += playGameOverAudio;
 	}
 
 	void updateBgAudio(Scene scene, LoadSceneMode mode) {
@@ -49,6 +60,12 @@ public class AudioManager : MonoBehaviour {
 		default:
 			break;
 		}
+		_bgSource.Play();
+	}
+
+	void playGameOverAudio() {
+		_bgSource.Stop();
+		_bgSource.clip = _bgAudioClips[2];
 		_bgSource.Play();
 	}
 
@@ -71,8 +88,8 @@ public class AudioManager : MonoBehaviour {
 		_mixer.SetFloat(group, value != 0 ? Mathf.Log10(value / 100) * 20 : -80.0f);
 	}
 
-	public void muteToggleAll() {
-		muted = !muted;
+	public void muteToggleAll(bool mute) {
+		muted = mute;
 		if (muted) {
 			setMixerVolume(Constants.MIXER_MASTER, 0.0f);
 			return;
@@ -109,5 +126,6 @@ public class AudioManager : MonoBehaviour {
 		DataPersistenceManager.save(Constants.MIXER_SFX, volumes[(int)Volumes.SFX]);
 		DataPersistenceManager.save(Constants.MIXER_MUTED_ALL, muted ? 1 : 0);
 		SceneManager.sceneLoaded -= updateBgAudio;
+		UIManager.onGameOver -= playGameOverAudio;
 	}
 }

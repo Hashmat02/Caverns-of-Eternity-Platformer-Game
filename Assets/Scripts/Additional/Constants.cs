@@ -20,6 +20,7 @@ static public class Constants {
     // Object Tags
 	public const string TAG_PLAYER = "Player";
 	public const string TAG_GROUND = "Ground";
+	public const string TAG_TRAP_KILLER = "KillerTrap";
 
     // Project Layers
     public const int LAYER_DEFAULT = 0;
@@ -27,6 +28,7 @@ static public class Constants {
     // Crystals
     public const int CRYSTALS_VALUE_EACH = 5; // amount of crystals added per coin picked up
 
-    // Player Movement Speeds
+    // Player Movement Parameters
+	public const float DEF_GRAVITY_SCALE = 1.0f;
     public const float PLAYER_GRAVITY = 10.0f; // acceleration
 }

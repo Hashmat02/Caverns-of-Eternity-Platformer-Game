@@ -13,6 +13,9 @@ public class CrystalsCounter : MonoBehaviour {
 
 	void Start() {
 		_text = GetComponent<Text>();
+		if (!_text) {
+			ErrorHandling.throwError("No Text component found.");
+		}
 		updateText();
 	}
         

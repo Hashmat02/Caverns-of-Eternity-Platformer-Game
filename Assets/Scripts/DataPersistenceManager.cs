@@ -14,18 +14,30 @@ public class DataPersistenceManager {
 	}
 
 	static public int loadInt(string key) {
+		if (!PlayerPrefs.HasKey(key)) {
+			return -1;
+		}
 		return PlayerPrefs.GetInt(key);
 	}
 
 	static public float loadFloat(string key) {
+		if (!PlayerPrefs.HasKey(key)) {
+			return -1f;
+		}
 		return PlayerPrefs.GetFloat(key);
 	}
 
 	static public string loadString(string key) {
+		if (!PlayerPrefs.HasKey(key)) {
+			return "";
+		}
 		return PlayerPrefs.GetString(key);
 	}
 
 	static public void erase(string key) {
+		if (!PlayerPrefs.HasKey(key)) {
+			return;
+		}
 		PlayerPrefs.DeleteKey(key);
 	}
 

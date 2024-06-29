@@ -15,18 +15,26 @@ public class VolumeSettings : MonoBehaviour {
 	[SerializeField] private VolumeConfig[] _volumes;
 
 	void Awake() {
+		if (!_mute) {
+			ErrorHandling.throwError("No Mute Toggle found.");
+		}
+		if (_volumes.Length == 0) {
+			ErrorHandling.throwError("No Volume Sliders configured.");
+		}
+
 		foreach (var vol in _volumes) {
 			vol.slider.onValueChanged.AddListener((value) => {
 				updateVolume(vol, value);
 			});
 		}
+		_mute.onValueChanged.AddListener(AudioManager.instance.muteToggleAll);
 	}
 
 	void OnEnable() {
 		_mute.SetIsOnWithoutNotify(AudioManager.instance.muted);
 		foreach (var vol in _volumes) {
-			vol.text.text = vol.label + vol.slider.value;
 			vol.slider.SetValueWithoutNotify(AudioManager.instance.volumes[(int)vol.mixerGroup]);
+			vol.text.text = vol.label + vol.slider.value;
 		}
 	}
 	

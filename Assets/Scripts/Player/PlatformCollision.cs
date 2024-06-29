@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionCheck : MonoBehaviour {
+public class PlatformCollision : MonoBehaviour {
     public bool isGround { get; private set; }
     public bool isWall { get; private set; }
     public float friction { get; private set; }
