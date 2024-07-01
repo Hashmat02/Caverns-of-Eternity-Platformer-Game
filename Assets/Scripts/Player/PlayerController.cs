@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
     [Header("Movement Properties")]
     [SerializeField, Range(0.0f, 50.0f)] private float _maxVel = 4.0f;
     [SerializeField, Range(0.0f, 50.0f)] private float _maxAccel = 40.0f;
@@ -30,103 +29,78 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector2 _wallJumpLeap = new Vector2(10.7f, 10.0f);
     [SerializeField, Range(0.0f, 1.0f)] private float _wallStickTime = 0.5f;
 
-    // private bool _wantWallJump = false;
     private bool _isWallJumping = false;
     private float _wallStickCounter;
 
     private delegate void DesiredJump();
-    private DesiredJump desiredJump;
+    private DesiredJump _desiredJump;
+
+	public delegate void PlayJump();
+	public PlayJump playJump;
+
+	public delegate void JumpLanded();
+	public JumpLanded landed;
 
     private Rigidbody2D _body;
     private PlatformCollision _collisionCheck;
 
-    void Awake()
-    {
+    void Awake() {
         _body = GetComponent<Rigidbody2D>();
-        if (!_body)
-        {
+        if (!_body) {
             ErrorHandling.throwError("No Rigidbody2D component found.");
         }
         _collisionCheck = GetComponent<PlatformCollision>();
-        if (!_collisionCheck)
-        {
+        if (!_collisionCheck) {
             ErrorHandling.throwError("No PlatformCollision script found.");
         }
     }
 
-    void Start()
-    {
+    void Start() {
         _coyoteCounter = _coyoteTime;
         _wallStickCounter = _wallStickTime;
     }
 
-    void Update()
-    {
+    void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
-        // _wantJump |= Input.GetButtonDown("Jump") && _collisionCheck.isGround;
-        // _wantWallJump |= Input.GetButtonDown("Jump") && (_collisionCheck.isWall && !_collisionCheck.isGround);
-        if (_collisionCheck.isGround)
-        {
-            desiredJump = jump;
-        }
-        else if (_collisionCheck.isWall)
-        {
-            desiredJump = wallJump;
-        }
-        else
-        {
-            desiredJump = null;
-        }
+		_desiredJump = _collisionCheck.isGround ? jump : _collisionCheck.isWall ? wallJump : null;
         _wantJump |= Input.GetButtonDown("Jump");
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         _velocity = _body.velocity;
         playerMoveKeyboard();
 
         #region Coyote Counter
-        if (_collisionCheck.isGround && _body.velocity.y == 0)
-        {
+        if (_collisionCheck.isGround && _body.velocity.y == 0) {
             _coyoteCounter = _coyoteTime;
         }
-        else
-        {
+        else {
             _coyoteCounter -= Time.deltaTime;
         }
         #endregion
 
         #region Wall Stick Counter
-        if (_wallStickCounter > 0.0f && _collisionCheck.isWall && !_collisionCheck.isGround && !_isWallJumping)
-        {
+        if ( _wallStickCounter > 0.0f && _collisionCheck.isWall && !_collisionCheck.isGround && !_isWallJumping) {
             wallStick();
         }
-        else
-        {
+        else {
             _wallStickCounter = _wallStickTime;
         }
         #endregion
 
         #region Jump
-        if (_wantJump)
-        {
-            desiredJump?.Invoke();
-            // _wantWallJump = false;
+        if (_wantJump) {
+			if (_desiredJump != null) {
+				playJump?.Invoke();
+			}
+            _desiredJump?.Invoke();
             _wantJump = false;
         }
         #endregion
 
-        #region Wall Jump
-        // if (_wantWallJump) {
-        //     wallJump();
-        //     _wantJump = false;
-        // }
-        #endregion
-
         #region Wall Slide
-        if (_collisionCheck.isWall && _velocity.y < -_wallSlideMaxVel)
-        {
+        if (_collisionCheck.isWall && _velocity.y < -_wallSlideMaxVel) {
             _velocity.y = -_wallSlideMaxVel;
         }
         #endregion
@@ -139,29 +113,22 @@ public class PlayerController : MonoBehaviour
         _body.velocity = _velocity;
     }
 
-    void playerMoveKeyboard()
-    {
+    void playerMoveKeyboard() {
         float acceleration = (_collisionCheck.isGround ? _maxAccel : _maxAirAccel) * Time.deltaTime;
         _velocity.x = Mathf.MoveTowards(_velocity.x, _projectedVelX, acceleration);
     }
 
-    void wallStick()
-    {
+    void wallStick() {
         _velocity.x = 0.0f;
-        if (_moveX == _collisionCheck.contactNormal.x)
-        {
+        if (_moveX == _collisionCheck.contactNormal.x) {
             _wallStickCounter -= Time.deltaTime;
+			return;
         }
-        else
-        {
-            _wallStickCounter = _wallStickTime;
-        }
+		_wallStickCounter = _wallStickTime;
     }
 
-    void jump()
-    {
-        if (_coyoteCounter <= 0.0f && _jumpCount > _maxAirJumps)
-        {
+    void jump() {
+        if (_coyoteCounter <= 0.0f && _jumpCount > _maxAirJumps) {
             _wantJump = false;
             return;
         }
@@ -169,31 +136,24 @@ public class PlayerController : MonoBehaviour
         _coyoteCounter = 0.0f;
         float jumpVel = Mathf.Sqrt(-2f * Physics2D.gravity.y * _jumpHeight);
         _velocity = new Vector2(_velocity.x, jumpVel);
-        // _wantJump = false;
     }
 
-    void wallJump()
-    {
-        if (-_collisionCheck.contactNormal.x == _moveX)
-        {
+    void wallJump() {
+        if (-_collisionCheck.contactNormal.x == _moveX) {
             _velocity = new Vector2(_wallJumpClimb.x * _collisionCheck.contactNormal.x, _wallJumpClimb.y);
         }
-        else if (_collisionCheck.contactNormal.x == _moveX)
-        {
+        else if (_collisionCheck.contactNormal.x == _moveX) {
             _velocity = new Vector2(_wallJumpLeap.x * _collisionCheck.contactNormal.x, _wallJumpLeap.y);
         }
-        // _wantWallJump = false;
         _isWallJumping = true;
     }
 
-    void OnCollisionEnter2D()
-    {
-        if (_collisionCheck.isWall && !_collisionCheck.isGround && _isWallJumping)
-        {
+    void OnCollisionEnter2D() {
+        if (_collisionCheck.isWall && !_collisionCheck.isGround && _isWallJumping) {
             _body.velocity = Vector2.zero;
         }
-        if (_collisionCheck.isGround)
-        {
+        if (_collisionCheck.isGround) {
+			landed?.Invoke();
             _jumpCount = 0;
         }
         _isWallJumping = false;

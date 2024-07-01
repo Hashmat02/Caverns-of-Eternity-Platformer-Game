@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 
     void Awake() {
         if (instance && instance != this) {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         instance = this;

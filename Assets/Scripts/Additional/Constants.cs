@@ -2,7 +2,7 @@ static public class Constants {
     // Scene Names
     public const string SCENE_MAIN_MENU = "MainMenu";
     public const string SCENE_LEVEL_SELECT = "LevelSelect"; // only available in dev mode
-    public const string SCENE_GAMEPLAY = "TestScene";
+    public const string SCENE_GAMEPLAY = "Level1";
 
     // Player Prefs
     public const int NUMBER_OF_LEVELS = 1;
@@ -21,6 +21,7 @@ static public class Constants {
 	public const string TAG_PLAYER = "Player";
 	public const string TAG_GROUND = "Ground";
 	public const string TAG_TRAP_KILLER = "KillerTrap";
+	public const string TAG_COLLECTIBLE_CRYSTAL = "CollectibleCrystal";
 
     // Project Layers
     public const int LAYER_DEFAULT = 0;

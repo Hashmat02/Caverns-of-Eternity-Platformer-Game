@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3636455856622371967}
   - component: {fileID: 2407719305617424868}
   - component: {fileID: 2456863224687861333}
+  - component: {fileID: 5891244107811496403}
   - component: {fileID: 1713022584060617099}
   m_Layer: 0
   m_Name: TestPlayer
@@ -344,6 +345,18 @@ MonoBehaviour:
   _wallJumpClimb: {x: 5, y: 15}
   _wallJumpLeap: {x: 10, y: 10}
   _wallStickTime: 0.5
+--- !u!114 &5891244107811496403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4449549673987557296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 560863a019e83700fb67add6db2bc614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1713022584060617099
 MonoBehaviour:
   m_ObjectHideFlags: 0
