@@ -17,7 +17,7 @@ public class ButtonTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Player") || collider.CompareTag("Box")) // Check for both Player and Box tags
         {
             _laserController.ActivateLaser(true);
         }
@@ -25,7 +25,7 @@ public class ButtonTrigger : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Player") || collider.CompareTag("Box")) // Check for both Player and Box tags
         {
             _laserController.ActivateLaser(false);
         }

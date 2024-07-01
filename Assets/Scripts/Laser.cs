@@ -163,3 +163,4 @@ public class Laser_Tutorial : MonoBehaviour
         }
     }
 }
+            // Debug.LogError("LineRenderer is missing.");
