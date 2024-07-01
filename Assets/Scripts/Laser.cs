@@ -12,14 +12,27 @@ public class Laser_Tutorial : MonoBehaviour
     private Vector2 currentDirection = Vector2.right; // Default direction
     private Vector2 targetDirection = Vector2.right;
     private bool isRotating = false;
+    private bool isActive = false; // Laser activation state
 
     private void Awake()
     {
         m_transform = GetComponent<Transform>();
+        if (m_lineRenderer == null)
+        {
+            m_lineRenderer = GetComponent<LineRenderer>();
+            if (m_lineRenderer == null)
+            {
+                Debug.LogError("LineRenderer component is missing.");
+                return;
+            }
+        }
+        m_lineRenderer.enabled = false; // Ensure laser is off initially
     }
 
     private void Update()
     {
+        if (!isActive) return; // Only handle input and shoot if laser is active
+
         HandleInput();
         ShootLaser();
     }
@@ -80,20 +93,66 @@ public class Laser_Tutorial : MonoBehaviour
     private void ShootLaser()
     {
         Vector2 laserDirection = m_transform.right;
-        RaycastHit2D _hit = Physics2D.Raycast(laserFirePoint.position, laserDirection, defDistanceRay);
-        if (_hit)
+        Vector2 startPosition = laserFirePoint.position;
+        DrawLaser(startPosition, laserDirection, defDistanceRay);
+    }
+
+    private void DrawLaser(Vector2 startPosition, Vector2 direction, float distance)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(startPosition, direction, distance);
+        if (hit)
         {
-            Draw2DRay(laserFirePoint.position, _hit.point);
+            if (hit.collider.CompareTag("Reflective"))
+            {
+                ReflectiveBox reflectiveBox = hit.collider.GetComponent<ReflectiveBox>();
+                if (reflectiveBox != null)
+                {
+                    Vector2 newDirection = reflectiveBox.Reflect(direction);
+                    Vector2 newStartPosition = hit.point + newDirection * 0.1f; // Slight offset to avoid hitting the same point
+
+                    RaycastHit2D secondHit = Physics2D.Raycast(newStartPosition, newDirection, distance);
+                    if (secondHit)
+                    {
+                        Draw2DRay(newStartPosition, secondHit.point);
+                    }
+                    else
+                    {
+                        Draw2DRay(newStartPosition, newStartPosition + newDirection * distance);
+                    }
+                }
+            }
+            else
+            {
+                Draw2DRay(startPosition, hit.point);
+            }
         }
         else
         {
-            Draw2DRay(laserFirePoint.position, (Vector2)laserFirePoint.position + laserDirection * defDistanceRay);
+            Draw2DRay(startPosition, startPosition + direction * distance);
         }
     }
 
     private void Draw2DRay(Vector2 startPos, Vector2 endPos)
     {
-        m_lineRenderer.SetPosition(0, startPos);
-        m_lineRenderer.SetPosition(1, endPos);
+        if (m_lineRenderer != null)
+        {
+            m_lineRenderer.positionCount = 2;
+            m_lineRenderer.SetPosition(0, startPos);
+            m_lineRenderer.SetPosition(1, endPos);
+        }
+    }
+
+    public void ActivateLaser(bool activate)
+    {
+        isActive = activate;
+        if (m_lineRenderer != null)
+        {
+            m_lineRenderer.enabled = activate;
+            Debug.Log("Laser activated: " + activate);
+        }
+        else
+        {
+            Debug.LogError("LineRenderer is missing.");
+        }
     }
 }
