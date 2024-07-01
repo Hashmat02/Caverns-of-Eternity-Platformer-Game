@@ -6,6 +6,7 @@ TagManager:
   tags:
   - KillerTrap
   - Reflective
+  - Laser
   layers:
   - Default
   - TransparentFX

@@ -125,6 +125,13 @@ public class Laser_Tutorial : MonoBehaviour
             {
                 Draw2DRay(startPosition, hit.point);
             }
+
+            // Tag the laser for detection
+            GameObject hitObject = hit.collider.gameObject;
+            if (!hitObject.CompareTag("Laser"))
+            {
+                hitObject.tag = "Laser";
+            }
         }
         else
         {

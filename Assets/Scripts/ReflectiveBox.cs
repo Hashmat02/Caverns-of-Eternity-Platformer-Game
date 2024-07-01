@@ -16,4 +16,10 @@ public class ReflectiveBox : MonoBehaviour
 
         return direction;
     }
+
+    // Add a method to move the reflective box
+    public void MoveLeft(float distance)
+    {
+        transform.position = new Vector2(transform.position.x - distance, transform.position.y);
+    }
 }
