@@ -8,6 +8,8 @@ TagManager:
   - Reflective
   - Laser
   - CollectibleCrystal
+  - Box
+  - Event
   layers:
   - Default
   - TransparentFX
