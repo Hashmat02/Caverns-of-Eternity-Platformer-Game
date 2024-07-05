@@ -23,6 +23,18 @@ public class SceneHandler : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public static void GoToMainMenuFromShop()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_MAIN_MENU);
+    }
+
+    public static void GoToShopFromMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_SHOP);
+    }
+
     public static void QuitGame()
     {
 #if UNITY_EDITOR
@@ -32,5 +44,3 @@ public class SceneHandler : MonoBehaviour
         Application.Quit();
     }
 }
-
-

@@ -16,4 +16,9 @@ public class ButtonInfo : MonoBehaviour
             QuantityTxt.text = "Quantity: " + ShopManager.shopItems[3, ItemID].ToString();
         }
     }
+
+    public void OnButtonClicked()
+    {
+        ShopManager.Buy();
+    }
 }

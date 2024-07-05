@@ -3,6 +3,8 @@ static public class Constants {
     public const string SCENE_MAIN_MENU = "MainMenu";
     public const string SCENE_LEVEL_SELECT = "LevelSelect"; // only available in dev mode
     public const string SCENE_GAMEPLAY = "Level1";
+    public const string SCENE_SHOP = "ShopScene";
+
 
     // Player Prefs
     public const int NUMBER_OF_LEVELS = 1;

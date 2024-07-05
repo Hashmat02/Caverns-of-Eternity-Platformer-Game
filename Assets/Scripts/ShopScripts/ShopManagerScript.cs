@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // Add this to use TextMeshPro
+using TMPro;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class ShopManagerScript : MonoBehaviour
 {
+    public static ShopManagerScript Instance { get; private set; }
 
-    public static ShopManagerScript Instance { get; private set; } // Change this line
-
-    public int[,] shopItems = new int[5, 5];
+    public int[,] shopItems = new int[4, 6]; // [property, itemID]
     public float coins;
-    public TextMeshProUGUI CoinsTXT; // Change Text to TextMeshProUGUI
+    public TextMeshProUGUI CoinsTXT;
+
+    private Dictionary<int, int> inventory = new Dictionary<int, int>(); // Dictionary to store inventory
+
     void Awake()
     {
         if (Instance == null)
@@ -24,39 +25,106 @@ public class ShopManagerScript : MonoBehaviour
         }
     }
 
-
     void Start()
     {
         CoinsTXT.text = "Coins: " + coins.ToString();
 
+        // Initialize shop items
+        InitializeShopItems();
+
+        // Initialize inventory from Player Prefs
+        LoadInventoryFromPlayerPrefs();
+    }
+
+    void InitializeShopItems()
+    {
+        // Item IDs
         shopItems[1, 1] = 1;
         shopItems[1, 2] = 2;
         shopItems[1, 3] = 3;
         shopItems[1, 4] = 4;
+        shopItems[1, 5] = 5;
 
-        // price
+        // Prices
         shopItems[2, 1] = 10;
         shopItems[2, 2] = 20;
         shopItems[2, 3] = 30;
         shopItems[2, 4] = 40;
+        shopItems[2, 5] = 50;
 
-        // quantity
-        shopItems[3, 1] = 0;
-        shopItems[3, 2] = 0;
-        shopItems[3, 3] = 0;
-        shopItems[3, 4] = 0;
+        // Quantities (initialize to 0)
+        for (int i = 1; i <= 5; i++)
+        {
+            shopItems[3, i] = 0;
+        }
     }
 
     public void Buy()
     {
-        GameObject ButtonRef = GameObject.FindGameObjectWithTag("Event").GetComponent<EventSystem>().currentSelectedGameObject;
+        GameObject ButtonRef = EventSystem.current.currentSelectedGameObject;
 
-        if (coins >= shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID])
+        int itemID = ButtonRef.GetComponent<ButtonInfo>().ItemID;
+        shopItems[3, itemID]++;
+        ButtonRef.GetComponent<ButtonInfo>().QuantityTxt.text = "Quantity: " + shopItems[3, itemID].ToString();
+    }
+
+    public void Checkout()
+    {
+        float totalCost = 0;
+        for (int i = 1; i <= 5; i++)
         {
-            coins -= shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID];
-            shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID]++;
-            CoinsTXT.text = "Coins: " + coins.ToString();
-            ButtonRef.GetComponent<ButtonInfo>().QuantityTxt.text = "Quantity: " + shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID].ToString();
+            totalCost += shopItems[2, i] * shopItems[3, i];
         }
+
+        if (coins >= totalCost)
+        {
+            coins -= totalCost;
+            CoinsTXT.text = "Coins: " + coins.ToString();
+
+            // Update inventory
+            for (int i = 1; i <= 5; i++)
+            {
+                if (shopItems[3, i] > 0)
+                {
+                    if (inventory.ContainsKey(i))
+                    {
+                        inventory[i] += shopItems[3, i]; // Update inventory
+                    }
+                    else
+                    {
+                        inventory[i] = shopItems[3, i]; // Initialize if not already in inventory
+                    }
+
+                    Debug.Log("Item " + i + " activated."); // Log activation (replace with actual activation logic)
+                    shopItems[3, i] = 0; // Reset selected quantity to 0
+                }
+            }
+
+            // Save inventory to Player Prefs
+            SaveInventoryToPlayerPrefs();
+
+            // Update UI
+            foreach (ButtonInfo buttonInfo in FindObjectsOfType<ButtonInfo>())
+            {
+                buttonInfo.QuantityTxt.text = "Quantity: " + shopItems[3, buttonInfo.ItemID].ToString();
+            }
+        }
+        else
+        {
+            Debug.Log("Not enough coins for checkout");
+        }
+    }
+
+    void SaveInventoryToPlayerPrefs()
+    {
+        string inventoryJson = JsonUtility.ToJson(inventory);
+        PlayerPrefs.SetString("Inventory", inventoryJson);
+        PlayerPrefs.Save();
+    }
+
+    void LoadInventoryFromPlayerPrefs()
+    {
+        string inventoryJson = PlayerPrefs.GetString("Inventory", "{}");
+        inventory = JsonUtility.FromJson<Dictionary<int, int>>(inventoryJson);
     }
 }
