@@ -5,14 +5,16 @@ TagManager:
   serializedVersion: 2
   tags:
   - KillerTrap
+  - Food
+  - Obstacle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Snake
   - Water
   - UI
-  - 
+  - Food
   - 
   - 
   - 
@@ -39,6 +41,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: 'Background '
+    uniqueID: 3974110255
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Food
+    uniqueID: 654188069
+    locked: 0
+  - name: Snake
+    uniqueID: 4030329137
+    locked: 0
+  - name: Over
+    uniqueID: 3233772711
     locked: 0
