@@ -7,6 +7,7 @@ TagManager:
   - KillerTrap
   - Food
   - Obstacle
+  - Crystal
   layers:
   - Default
   - TransparentFX

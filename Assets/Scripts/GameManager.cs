@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public float crystalSpawnInterval = 15f;
     private float crystalSpawnTimer;
     public string nextLevelSceneName = "Level2";
+    public BoxCollider2D gridArea;
 
     public int maxLives = 3;
     private int currentLives;
@@ -140,5 +141,10 @@ public class GameManager : MonoBehaviour
 
         this.transform.position = new Vector3(Mathf.Round(x), Mathf.Round(y), 0.0f);
         return Vector2.zero; // Placeholder
+    }
+
+    private void LoadNextLevel()
+    {
+        SceneManager.LoadScene(nextLevelSceneName);
     }
 }
