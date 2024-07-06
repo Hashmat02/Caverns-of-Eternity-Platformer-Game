@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,6 +31,12 @@ public class SceneHandler : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(Constants.SCENE_SHOP);
+    }
+
+    public static void GoToInventory()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_INVENTORY);
     }
 
     public static void QuitGame()

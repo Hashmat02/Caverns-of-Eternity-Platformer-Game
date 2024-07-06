@@ -1,6 +1,6 @@
 using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class InventoryManagerScript : MonoBehaviour
 {
@@ -36,7 +36,7 @@ public class InventoryManagerScript : MonoBehaviour
     void LoadInventoryFromPlayerPrefs()
     {
         string inventoryJson = PlayerPrefs.GetString("Inventory", "{}");
-        inventory = JsonUtility.FromJson<Dictionary<int, int>>(inventoryJson);
+        inventory = JsonConvert.DeserializeObject<Dictionary<int, int>>(inventoryJson);
     }
 
     public void ConsumeItem(int itemID)
@@ -60,7 +60,7 @@ public class InventoryManagerScript : MonoBehaviour
 
     void SaveInventoryToPlayerPrefs()
     {
-        string inventoryJson = JsonUtility.ToJson(inventory);
+        string inventoryJson = JsonConvert.SerializeObject(inventory);
         PlayerPrefs.SetString("Inventory", inventoryJson);
         PlayerPrefs.Save();
         Debug.Log("Inventory saved to PlayerPrefs.");

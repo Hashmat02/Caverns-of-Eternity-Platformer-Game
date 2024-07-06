@@ -2,38 +2,40 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class ShopManagerScript : MonoBehaviour
 {
     public static ShopManagerScript Instance { get; private set; }
 
     public int[,] shopItems = new int[4, 6]; // [property, itemID]
-    public float coins;
+    public int coins; // Use int for coins to avoid float precision issues
     public TextMeshProUGUI CoinsTXT;
 
     private Dictionary<int, int> inventory = new Dictionary<int, int>(); // Dictionary to store inventory
 
     void Awake()
     {
+        // Singleton pattern to ensure only one instance exists
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Ensure this object persists across scenes
         }
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
     void Start()
     {
+        LoadData();
         CoinsTXT.text = "Coins: " + coins.ToString();
 
         // Initialize shop items
         InitializeShopItems();
-
-        // Initialize inventory from Player Prefs
-        LoadInventoryFromPlayerPrefs();
     }
 
     void InitializeShopItems()
@@ -66,11 +68,18 @@ public class ShopManagerScript : MonoBehaviour
         int itemID = ButtonRef.GetComponent<ButtonInfo>().ItemID;
         shopItems[3, itemID]++;
         ButtonRef.GetComponent<ButtonInfo>().QuantityTxt.text = "Quantity: " + shopItems[3, itemID].ToString();
+
+        // Log the current quantities in the shop
+        Debug.Log("After buying, current quantities in the shop:");
+        for (int i = 1; i <= 5; i++)
+        {
+            Debug.Log("Item " + i + ": " + shopItems[3, i]);
+        }
     }
 
     public void Checkout()
     {
-        float totalCost = 0;
+        int totalCost = 0; // Use int for total cost
         for (int i = 1; i <= 5; i++)
         {
             totalCost += shopItems[2, i] * shopItems[3, i];
@@ -100,13 +109,27 @@ public class ShopManagerScript : MonoBehaviour
                 }
             }
 
-            // Save inventory to Player Prefs
-            SaveInventoryToPlayerPrefs();
+            // Save data to PlayerPrefs
+            SaveData();
 
             // Update UI
             foreach (ButtonInfo buttonInfo in FindObjectsOfType<ButtonInfo>())
             {
                 buttonInfo.QuantityTxt.text = "Quantity: " + shopItems[3, buttonInfo.ItemID].ToString();
+            }
+
+            // Log the current inventory
+            Debug.Log("After checkout, current inventory:");
+            for (int i = 1; i <= 5; i++)
+            {
+                if (inventory.ContainsKey(i))
+                {
+                    Debug.Log("Item " + i + ": " + inventory[i]);
+                }
+                else
+                {
+                    Debug.Log("Item " + i + ": 0");
+                }
             }
         }
         else
@@ -115,16 +138,35 @@ public class ShopManagerScript : MonoBehaviour
         }
     }
 
-    void SaveInventoryToPlayerPrefs()
+    public void SaveData()
     {
-        string inventoryJson = JsonUtility.ToJson(inventory);
+        PlayerPrefs.SetInt("Coins", coins);
+
+        string inventoryJson = JsonConvert.SerializeObject(inventory);
         PlayerPrefs.SetString("Inventory", inventoryJson);
+
         PlayerPrefs.Save();
     }
 
-    void LoadInventoryFromPlayerPrefs()
+    void LoadData()
     {
+        coins = PlayerPrefs.GetInt("Coins", 0);
         string inventoryJson = PlayerPrefs.GetString("Inventory", "{}");
-        inventory = JsonUtility.FromJson<Dictionary<int, int>>(inventoryJson);
+        inventory = JsonConvert.DeserializeObject<Dictionary<int, int>>(inventoryJson);
+
+        CoinsTXT.text = "Coins: " + coins.ToString();
+    }
+
+    void OnApplicationQuit()
+    {
+        SaveData();
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            SaveData();
+        }
     }
 }
