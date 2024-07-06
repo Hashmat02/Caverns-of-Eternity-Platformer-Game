@@ -1106,7 +1106,7 @@ MonoBehaviour:
   snake: {fileID: 1784373970}
   gameOverPanel: {fileID: 367478393}
   gameOverText: {fileID: 92857064}
-  mainMenuSceneName: TestScene
+  mainMenuSceneName: MainMenu
   highScoreText: {fileID: 0}
   lifeLostPanel: {fileID: 349089524}
   tryAgainButton: {fileID: 1977994991}

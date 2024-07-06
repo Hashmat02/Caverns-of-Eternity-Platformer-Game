@@ -172,16 +172,12 @@ public class MazePlayer : MonoBehaviour
 
     public void ReturnToPreviousLevel()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if (currentSceneIndex > 0)
-        {
-            SceneManager.LoadScene(currentSceneIndex - 1);
-        }
+        SceneManager.LoadScene("Level2");
     }
 
     public void NextLevel()
     {
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("MainMenu");
     }
 
 }
