@@ -2906,7 +2906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   posA: {fileID: 1986828737}
   posB: {fileID: 534151354}
-  Speed: 5
+  Speed: 3
   isConstantlyMoving: 1
 --- !u!50 &900454229
 Rigidbody2D:
@@ -6123,7 +6123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   posA: {fileID: 212623100}
   posB: {fileID: 91862492}
-  Speed: 5
+  Speed: 3
   isConstantlyMoving: 0
 --- !u!50 &1524822266
 Rigidbody2D:

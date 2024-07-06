@@ -2866,6 +2866,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1012201164}
   m_CullTransparentMesh: 1
+--- !u!1001 &1046640499
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6822034971978198886, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_Name
+      value: CrystalsManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.664033
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.6152487
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6371.266
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525375283841776407, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce5aad112b4188483bcc09de5b02db52, type: 3}
 --- !u!1 &1047660644
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,8 +4540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e7c6523df264c6faf23a44610f20aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins: 1000
-  CoinsTXT: {fileID: 1764360974}
+  CrystalsTXT: {fileID: 1764360974}
 --- !u!4 &1683841384
 Transform:
   m_ObjectHideFlags: 0
@@ -5805,6 +5861,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1896321686}
+  - {fileID: 1046640499}
   - {fileID: 1802986623}
   - {fileID: 489088942}
   - {fileID: 1683841384}
