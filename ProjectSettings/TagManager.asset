@@ -12,6 +12,10 @@ TagManager:
   - Keys
   - Fire
   - FinalCrystal
+  - Reflective
+  - Laser
+  - CollectibleCrystal
+  - Box
   layers:
   - Default
   - TransparentFX

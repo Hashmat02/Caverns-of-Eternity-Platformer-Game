@@ -29,25 +29,30 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Vector2 _wallJumpLeap = new Vector2(10.7f, 10.0f);
     [SerializeField, Range(0.0f, 1.0f)] private float _wallStickTime = 0.5f;
 
-    // private bool _wantWallJump = false;
     private bool _isWallJumping = false;
     private float _wallStickCounter;
-	
-	private delegate void DesiredJump();
-	private DesiredJump desiredJump;
+
+    private delegate void DesiredJump();
+    private DesiredJump _desiredJump;
+
+	public delegate void PlayJump();
+	public PlayJump playJump;
+
+	public delegate void JumpLanded();
+	public JumpLanded landed;
 
     private Rigidbody2D _body;
     private PlatformCollision _collisionCheck;
 
     void Awake() {
         _body = GetComponent<Rigidbody2D>();
-		if (!_body) {
-			ErrorHandling.throwError("No Rigidbody2D component found.");
-		}
+        if (!_body) {
+            ErrorHandling.throwError("No Rigidbody2D component found.");
+        }
         _collisionCheck = GetComponent<PlatformCollision>();
-		if (!_collisionCheck) {
-			ErrorHandling.throwError("No PlatformCollision script found.");
-		}
+        if (!_collisionCheck) {
+            ErrorHandling.throwError("No PlatformCollision script found.");
+        }
     }
 
     void Start() {
@@ -58,61 +63,50 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
-        // _wantJump |= Input.GetButtonDown("Jump") && _collisionCheck.isGround;
-        // _wantWallJump |= Input.GetButtonDown("Jump") && (_collisionCheck.isWall && !_collisionCheck.isGround);
-		if (_collisionCheck.isGround) {
-			desiredJump = jump;
-		} else if (_collisionCheck.isWall) {
-			desiredJump = wallJump;
-		} else {
-			desiredJump = null;
-		}
-		_wantJump |= Input.GetButtonDown("Jump");
+		_desiredJump = _collisionCheck.isGround ? jump : _collisionCheck.isWall ? wallJump : null;
+        _wantJump |= Input.GetButtonDown("Jump");
     }
 
     void FixedUpdate() {
         _velocity = _body.velocity;
         playerMoveKeyboard();
 
-#region Coyote Counter
+        #region Coyote Counter
         if (_collisionCheck.isGround && _body.velocity.y == 0) {
             _coyoteCounter = _coyoteTime;
-        } else {
+        }
+        else {
             _coyoteCounter -= Time.deltaTime;
         }
-#endregion
+        #endregion
 
-#region Wall Stick Counter
-        if (_wallStickCounter > 0.0f && _collisionCheck.isWall && !_collisionCheck.isGround && !_isWallJumping) {
+        #region Wall Stick Counter
+        if ( _wallStickCounter > 0.0f && _collisionCheck.isWall && !_collisionCheck.isGround && !_isWallJumping) {
             wallStick();
-        } else {
+        }
+        else {
             _wallStickCounter = _wallStickTime;
         }
-#endregion
+        #endregion
 
-#region Jump
+        #region Jump
         if (_wantJump) {
-			desiredJump?.Invoke();
-            // _wantWallJump = false;
-			_wantJump = false;
+			if (_desiredJump != null) {
+				playJump?.Invoke();
+			}
+            _desiredJump?.Invoke();
+            _wantJump = false;
         }
-#endregion
+        #endregion
 
-#region Wall Jump
-        // if (_wantWallJump) {
-        //     wallJump();
-        //     _wantJump = false;
-        // }
-#endregion
-
-#region Wall Slide
+        #region Wall Slide
         if (_collisionCheck.isWall && _velocity.y < -_wallSlideMaxVel) {
             _velocity.y = -_wallSlideMaxVel;
         }
-#endregion
+        #endregion
 
         // adjust gravity scale
-        _body.gravityScale = _body.velocity.y == 0 ? Constants.DEF_GRAVITY_SCALE 
+        _body.gravityScale = _body.velocity.y == 0 ? Constants.DEF_GRAVITY_SCALE
             : _body.velocity.y > 0 ? _riseMult
             : _fallMult;
 
@@ -128,9 +122,9 @@ public class PlayerController : MonoBehaviour {
         _velocity.x = 0.0f;
         if (_moveX == _collisionCheck.contactNormal.x) {
             _wallStickCounter -= Time.deltaTime;
-        } else {
-            _wallStickCounter = _wallStickTime;
+			return;
         }
+		_wallStickCounter = _wallStickTime;
     }
 
     void jump() {
@@ -142,16 +136,15 @@ public class PlayerController : MonoBehaviour {
         _coyoteCounter = 0.0f;
         float jumpVel = Mathf.Sqrt(-2f * Physics2D.gravity.y * _jumpHeight);
         _velocity = new Vector2(_velocity.x, jumpVel);
-        // _wantJump = false;
     }
 
     void wallJump() {
         if (-_collisionCheck.contactNormal.x == _moveX) {
             _velocity = new Vector2(_wallJumpClimb.x * _collisionCheck.contactNormal.x, _wallJumpClimb.y);
-        } else if (_collisionCheck.contactNormal.x == _moveX) {
+        }
+        else if (_collisionCheck.contactNormal.x == _moveX) {
             _velocity = new Vector2(_wallJumpLeap.x * _collisionCheck.contactNormal.x, _wallJumpLeap.y);
         }
-        // _wantWallJump = false;
         _isWallJumping = true;
     }
 
@@ -160,6 +153,7 @@ public class PlayerController : MonoBehaviour {
             _body.velocity = Vector2.zero;
         }
         if (_collisionCheck.isGround) {
+			landed?.Invoke();
             _jumpCount = 0;
         }
         _isWallJumping = false;

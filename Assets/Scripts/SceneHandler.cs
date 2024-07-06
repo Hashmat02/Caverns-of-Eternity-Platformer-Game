@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +21,24 @@ public class SceneHandler : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public static void GoToMainMenuFromShop()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_MAIN_MENU);
+    }
+
+    public static void GoToShopFromMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_SHOP);
+    }
+
+    public static void GoToInventory()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_INVENTORY);
+    }
+
     public static void QuitGame()
     {
 #if UNITY_EDITOR
@@ -32,5 +48,3 @@ public class SceneHandler : MonoBehaviour
         Application.Quit();
     }
 }
-
-
