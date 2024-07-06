@@ -8,6 +8,10 @@ TagManager:
   - Food
   - Obstacle
   - Crystal
+  - Walls
+  - Keys
+  - Fire
+  - FinalCrystal
   layers:
   - Default
   - TransparentFX

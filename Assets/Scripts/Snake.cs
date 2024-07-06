@@ -8,24 +8,24 @@ public class Snake : MonoBehaviour
     public Transform segmentPrefab;
     public float initialSpeed = 5f;
     private float _currentSpeed;
-    private float _speedIncreaseFactor = 1.01f; // 0.5% increase = 100% - 0.5% = 99.5% = 0.995
+    private float _speedIncreaseFactor = 1.01f; 
     private int _frame = 0;
-    //
+    
     private GameManager gameManager;
-    private bool canMove = true;
+    public bool canMove = true;
 
     private void Start()
     {
         _segments = new List<Transform>();
         _segments.Add(this.transform);
         _currentSpeed = initialSpeed;
-        //
+       
         gameManager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
     {
-        //
+        
         if (!canMove || gameManager.IsGameOver()) return;
 
         if (Input.GetKeyDown(KeyCode.UpArrow) && _direction != Vector2.down)
@@ -48,7 +48,7 @@ public class Snake : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //
+        
         if (!canMove || gameManager.IsGameOver()) return;
 
         _frame++;
@@ -92,32 +92,6 @@ public class Snake : MonoBehaviour
         Debug.Log($"Speed increased! Current speed: {_currentSpeed}");
     }
 
-    /*private void ResetState()
-    {
-        for (int i = 1; i < _segments.Count; i++)
-        {
-            Destroy(_segments[i].gameObject);
-        }
-        _segments.Clear();
-        _segments.Add(this.transform);
-        this.transform.position = Vector3.zero;
-        _direction = Vector2.right;
-        _currentSpeed = initialSpeed;
-        _frame = 0;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Food"))
-        {
-            Debug.Log("Collided with food");
-            Grow();
-        }
-        else if (other.CompareTag("Obstacle"))
-        {
-            ResetState();
-        }
-    }*/
 
     public void ResetState()
     {
@@ -141,10 +115,15 @@ public class Snake : MonoBehaviour
         {
             Debug.Log("Collided with food");
             Grow();
+            gameManager.CollectFood();
         }
         else if (other.CompareTag("Obstacle"))
         {
             gameManager.LoseLife();
+        }
+        else if (other.CompareTag("Crystal"))
+        {
+            gameManager.CollectCrystal();
         }
     }
 }

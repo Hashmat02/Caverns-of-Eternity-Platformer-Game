@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class CrystalSnake : MonoBehaviour
 {
-    public float lifetime = 10f; // How long the crystal stays on screen
+    public float lifetime = 1f;
     private float timer;
+    private bool isCollected = false;
 
     private void OnEnable()
     {
         timer = lifetime;
+        isCollected = false;
     }
 
     private void Update()
@@ -23,8 +25,9 @@ public class CrystalSnake : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isCollected)
         {
+            isCollected = true;
             GameManager.Instance.CollectCrystal();
             gameObject.SetActive(false);
         }

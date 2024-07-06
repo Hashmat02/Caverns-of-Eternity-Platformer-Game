@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private float crystalSpawnTimer;
     public string nextLevelSceneName = "Level2";
     public BoxCollider2D gridArea;
+    private bool isCrystalActive = false;
 
     public int maxLives = 3;
     private int currentLives;
@@ -28,6 +29,17 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public string mainMenuSceneName = "MainMenu";
 
+    private int highScore = 0;
+    public TextMeshProUGUI highScoreText;
+
+    public GameObject lifeLostPanel;
+    public Button tryAgainButton;
+    public Button mainMenuButton;
+
+    public int score = 0;
+    public TextMeshProUGUI scoreText;
+    public int foodPoints = 1;
+    public int crystalPoints = 10;
 
     private void Awake()
     {
@@ -49,6 +61,11 @@ public class GameManager : MonoBehaviour
 
         UpdateCrystalDisplay();
         crystalSpawnTimer = crystalSpawnInterval;
+
+        tryAgainButton.onClick.AddListener(TryAgain);
+        mainMenuButton.onClick.AddListener(LoadMainMenu);
+
+        UpdateScoreDisplay();
     }
 
     public void LoseLife()
@@ -58,14 +75,30 @@ public class GameManager : MonoBehaviour
         currentLives--;
         UpdateLifeDisplay();
 
+        // Reset crystal count
+        ResetCrystalCount();
+
         if (currentLives <= 0)
         {
             GameOver();
         }
         else
         {
-            snake.ResetState();
+            ShowLifeLostPanel();
         }
+    }
+
+    private void ShowLifeLostPanel()
+    {
+        lifeLostPanel.SetActive(true);
+        snake.StopMovement();
+    }
+
+
+    private void ResetCrystalCount()
+    {
+        collectedCrystals = 0;
+        UpdateCrystalDisplay();
     }
 
     private void UpdateLifeDisplay()
@@ -80,9 +113,24 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = true;
         Debug.Log("Game Over!");
-        snake.StopMovement(); 
+        snake.StopMovement();
         gameOverPanel.SetActive(true);
         gameOverText.text = "Game Over!";
+
+        if (SceneManager.GetActiveScene().name != "Level1")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        }
+        else
+        {
+            // If it's the first level, just show the main menu button
+            mainMenuButton.gameObject.SetActive(true);
+        }
+        if (score > highScore)
+        {
+            highScore = score;
+        }
+        highScoreText.text = $"High Score: {highScore}";
     }
 
     public bool IsGameOver()
@@ -97,7 +145,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isGameOver)
+        if (!isGameOver && !isCrystalActive)
         {
             crystalSpawnTimer -= Time.deltaTime;
             if (crystalSpawnTimer <= 0)
@@ -111,12 +159,20 @@ public class GameManager : MonoBehaviour
     public void CollectCrystal()
     {
         collectedCrystals++;
+        AddScore(crystalPoints);
         UpdateCrystalDisplay();
-
+        isCrystalActive = false;
         if (collectedCrystals >= crystalsToNextLevel)
         {
             LoadNextLevel();
         }
+    }
+
+    private void TryAgain()
+    {
+        lifeLostPanel.SetActive(false);
+        ResetGame();
+        snake.canMove = true;
     }
 
     private void UpdateCrystalDisplay()
@@ -128,23 +184,51 @@ public class GameManager : MonoBehaviour
     {
         Vector2 randomPosition = GetRandomPosition();
         GameObject crystal = Instantiate(crystalPrefab, randomPosition, Quaternion.identity);
+        isCrystalActive = true;
+        Debug.Log($"Crystal spawned at position: {randomPosition}");
     }
 
     private Vector2 GetRandomPosition()
     {
-        // Implement this method to return a random position within your game boundaries
-        // You can use similar logic to your food spawning
         Bounds bounds = this.gridArea.bounds;
-
         float x = Random.Range(bounds.min.x, bounds.max.x);
         float y = Random.Range(bounds.min.y, bounds.max.y);
-
-        this.transform.position = new Vector3(Mathf.Round(x), Mathf.Round(y), 0.0f);
-        return Vector2.zero; // Placeholder
+        return new Vector2(Mathf.Round(x), Mathf.Round(y));
     }
 
     private void LoadNextLevel()
     {
         SceneManager.LoadScene(nextLevelSceneName);
     }
+
+    public void ResetGame()
+    {
+        GameObject[] crystals = GameObject.FindGameObjectsWithTag("Crystal");
+        foreach (GameObject crystal in crystals)
+        {
+            Destroy(crystal);
+        }
+        isCrystalActive = false;
+        ResetCrystalCount();
+        snake.ResetState();
+        score = 0;
+        UpdateScoreDisplay();
+    }
+
+    public void AddScore(int points)
+    {
+        score += points;
+        UpdateScoreDisplay();
+    }
+
+    private void UpdateScoreDisplay()
+    {
+        scoreText.text = $"Score: {score}";
+    }
+
+    public void CollectFood()
+    {
+        AddScore(foodPoints);
+    }
+
 }
