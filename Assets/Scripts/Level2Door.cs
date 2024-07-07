@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class DoorController : MonoBehaviour
+public class Level2Door : MonoBehaviour
 {
-    private const int RequiredCrystals = 10;
+    private const int RequiredCrystals = 11;
     private int collectedCrystals = 0;
     private bool isTransitioning = false;
 
     [SerializeField]
-    private string nextSceneName = "SnakeGame";
+    private string nextSceneName = "MazeGame";
 
     void Start()
     {
@@ -65,7 +65,7 @@ public class DoorController : MonoBehaviour
             Debug.LogError("Scene '" + nextSceneName + "' not found in build settings. Please check the scene name and build settings.");
         }
     }
- 
+
     void OnDestroy()
     {
         if (isTransitioning)

@@ -6,7 +6,7 @@ static public class Constants {
     public const string SCENE_SHOP = "ShopScene";
     public const string SCENE_INVENTORY = "InventoryScene";
     public const string SCENE_ACHIEVEMENTS = "Achievement";
-
+    public const string SCENE_SNAKE_GAME = "SnakeGame";
 
     // Player Prefs
     public const int NUMBER_OF_LEVELS = 1;
@@ -47,4 +47,6 @@ static public class Constants {
 
 	// Powerupds
 	public const float POWERUPS_SPEED_DURATION = 10.0f; // seconds;
+
+
 }
