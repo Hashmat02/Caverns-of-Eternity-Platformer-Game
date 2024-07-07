@@ -45,6 +45,12 @@ public class SceneHandler : MonoBehaviour
         SceneManager.LoadScene("Level2"); // Hardcoded for this example
     }
 
+    public static void GoToSnakeGame() // New method to go to SnakeGame
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_SNAKE_GAME);
+    }
+
     public static void GoToAchievements()
     {
         Time.timeScale = 1f;
