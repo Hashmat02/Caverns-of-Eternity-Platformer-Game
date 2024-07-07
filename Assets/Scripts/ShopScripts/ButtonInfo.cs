@@ -1,24 +1,11 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
-public class ButtonInfo : MonoBehaviour
-{
-    public int ItemID;
-    public TextMeshProUGUI PriceTxt;
-    public TextMeshProUGUI QuantityTxt;
-    public ShopManagerScript ShopManager; // Change this line
+public class ButtonInfo : MonoBehaviour {
+    [SerializeField] private PowerupsManager.Powerups _itemID;
+	[SerializeField] private int _cost;
 
-    void Update()
-    {
-        if (ShopManager != null)
-        {
-            PriceTxt.text = "Price: " + ShopManager.shopItems[2, ItemID].ToString();
-            QuantityTxt.text = "Quantity: " + ShopManager.shopItems[3, ItemID].ToString();
-        }
-    }
-
-    public void OnButtonClicked()
-    {
-        ShopManager.Buy();
-    }
+	void Awake() {
+		GetComponent<Button>().onClick.AddListener(() =>ShopManagerScript.instance.Buy(_itemID, _cost));
+	}
 }

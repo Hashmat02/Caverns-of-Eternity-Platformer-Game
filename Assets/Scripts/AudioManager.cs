@@ -136,6 +136,7 @@ public class AudioManager : MonoBehaviour {
 			return;
 		}
 		setMixerVolume(Constants.MIXER_MASTER, volumes[(int)Volumes.MASTER]);
+		updateBgAudio(SceneManager.GetActiveScene(), LoadSceneMode.Single);
     }
 
 	void setMixerVolume(string group, float value) {
