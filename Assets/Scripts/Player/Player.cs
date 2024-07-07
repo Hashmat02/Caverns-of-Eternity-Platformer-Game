@@ -47,7 +47,7 @@ public class Player : MonoBehaviour {
 	public void triggerDeath() {
 		lives--;
 		if (lives <= 0) {
-			if (_checkpointSet && Cheats.instance.cheats[Cheats.CheatTypes.CHECKPOINT]) {
+			if (_checkpointSet && Cheats.cheats[Cheats.CheatTypes.CHECKPOINT]) {
 				revertToCheckpointPos();
 				return;
 			}

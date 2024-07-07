@@ -4,5 +4,32 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Achievement.unity
+    guid: 3ebc3115149f04d72a830aa51add6393
+  - enabled: 1
+    path: Assets/Scenes/InventoryScene.unity
+    guid: e1bf9c8e247bf4801b62b8f94a03fc4a
+  - enabled: 1
+    path: Assets/Scenes/LaserScene.unity
+    guid: f4324bcb750cb4b7f9f1557b87de90d4
+  - enabled: 1
+    path: Assets/Scenes/Level1.unity
+    guid: fa81ed123959a405eb0f8bbe29c2deff
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: 39ba0d0ba5b3d4ac6ba5732046acb13b
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: ca1fcfec1de4f43b39119e2674664b21
+  - enabled: 1
+    path: Assets/Scenes/MazeGame.unity
+    guid: 638be74a77fbd48019ec13ac54026da6
+  - enabled: 1
+    path: Assets/Scenes/ShopScene.unity
+    guid: 7b11a37c6b4764a4ab7c903179841d94
+  - enabled: 1
+    path: Assets/Scenes/SnakeGame.unity
+    guid: cad26473c5f294790a7559b1d4d81361
   m_configObjects: {}

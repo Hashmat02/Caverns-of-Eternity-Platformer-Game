@@ -29,27 +29,39 @@ public class CrystalsManager : MonoBehaviour {
 
     public void add(int i) {
         crystalCount += i;
-		_localCrystalCount += i;
         onCountChange?.Invoke();
-        CheckForAchievements();
+		if (Cheats.cheatsOn) {
+			return;
+		}
+		_localCrystalCount += i;
+		CheckForAchievements();
     }
 
 	public void subtract(int i) {
 		crystalCount -= i;
-		_localCrystalCount -= i;
 		onCountChange?.Invoke();
+		if (Cheats.cheatsOn) {
+			return;
+		}
+		_localCrystalCount -= i;
 	}
 
 	public void multiply(int i) {
 		crystalCount *= i;
-		_localCrystalCount *= i;
 		onCountChange?.Invoke();
+		if (Cheats.cheatsOn) {
+			return;
+		}
+		_localCrystalCount *= i;
 	}
 
 	public void divide(int i) {
 		crystalCount /= i;
-		_localCrystalCount /= i;
 		onCountChange?.Invoke();
+		if (Cheats.cheatsOn) {
+			return;
+		}
+		_localCrystalCount /= i;
 	}
 
     public void loadCrystals() {

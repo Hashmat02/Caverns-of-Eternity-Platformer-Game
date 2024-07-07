@@ -49,14 +49,14 @@ public class PlayerPowerups : MonoBehaviour {
 
 		if (
 			PowerupsManager.powerupsCount[PowerupsManager.keybindsInverse[code]] > 0 || 
-			Cheats.instance.cheats[Cheats.CheatTypes.POWER]
+			Cheats.cheats[Cheats.CheatTypes.POWER]
 		) {
 			_powerupFunctionCalls[code].Invoke();
 		}
 	}
 
 	void decrementPowerupCount(PowerupsManager.Powerups powerup) {
-		if (Cheats.instance.cheats[Cheats.CheatTypes.POWER]) {
+		if (Cheats.cheats[Cheats.CheatTypes.POWER]) {
 			return;
 		}
 		PowerupsManager.powerupsCount[powerup]--;
