@@ -26,7 +26,8 @@ public class Snake : MonoBehaviour
     private void Update()
     {
         
-        if (!canMove || gameManager.IsGameOver()) return;
+        if (!gameManager.IsGameStarted() || !canMove || gameManager.IsGameOver()) return;
+
 
         if (Input.GetKeyDown(KeyCode.UpArrow) && _direction != Vector2.down)
         {

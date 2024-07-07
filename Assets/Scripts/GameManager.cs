@@ -2,11 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    //
     public static GameManager Instance;
     public int crystalsToNextLevel = 8;
     private int collectedCrystals = 0;
@@ -29,17 +28,24 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public string mainMenuSceneName = "MainMenu";
 
-    private int highScore = 0;
-    public TextMeshProUGUI highScoreText;
-
     public GameObject lifeLostPanel;
     public Button tryAgainButton;
     public Button mainMenuButton;
+    public Button returnToPreviousLevelButton;
+    public Button gameOverMainMenuButton;
 
     public int score = 0;
     public TextMeshProUGUI scoreText;
     public int foodPoints = 1;
     public int crystalPoints = 10;
+
+    public GameObject levelClearedPanel;
+    public Button nextLevelButton;
+    public Button levelClearedMainMenuButton;
+
+    private bool isCrystalBeingCollected = false;
+    public Button startButton;
+    private bool isGameStarted = false;
 
     private void Awake()
     {
@@ -64,8 +70,28 @@ public class GameManager : MonoBehaviour
 
         tryAgainButton.onClick.AddListener(TryAgain);
         mainMenuButton.onClick.AddListener(LoadMainMenu);
+        returnToPreviousLevelButton.onClick.AddListener(LoadLevel1);
+        gameOverMainMenuButton.onClick.AddListener(LoadMainMenu);
 
         UpdateScoreDisplay();
+
+        nextLevelButton.onClick.AddListener(LoadNextLevel);
+        levelClearedMainMenuButton.onClick.AddListener(LoadMainMenu);
+
+        startButton.onClick.AddListener(StartGame);
+        Time.timeScale = 0;
+
+        returnToPreviousLevelButton.onClick.AddListener(() => {
+            Debug.Log("Return to Level button clicked");
+            LoadLevel1();
+        }); 
+    }
+
+    private void StartGame()
+    {
+        isGameStarted = true;
+        Time.timeScale = 1; // Resume the game
+        startButton.gameObject.SetActive(false);
     }
 
     public void LoseLife()
@@ -75,7 +101,6 @@ public class GameManager : MonoBehaviour
         currentLives--;
         UpdateLifeDisplay();
 
-        // Reset crystal count
         ResetCrystalCount();
 
         if (currentLives <= 0)
@@ -93,7 +118,6 @@ public class GameManager : MonoBehaviour
         lifeLostPanel.SetActive(true);
         snake.StopMovement();
     }
-
 
     private void ResetCrystalCount()
     {
@@ -119,18 +143,14 @@ public class GameManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name != "Level1")
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+            returnToPreviousLevelButton.gameObject.SetActive(true);
+            gameOverMainMenuButton.gameObject.SetActive(true);
         }
         else
         {
-            // If it's the first level, just show the main menu button
-            mainMenuButton.gameObject.SetActive(true);
+            returnToPreviousLevelButton.gameObject.SetActive(false);
+            gameOverMainMenuButton.gameObject.SetActive(true);
         }
-        if (score > highScore)
-        {
-            highScore = score;
-        }
-        highScoreText.text = $"High Score: {highScore}";
     }
 
     public bool IsGameOver()
@@ -141,6 +161,11 @@ public class GameManager : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    public bool IsGameStarted()
+    {
+        return isGameStarted;
     }
 
     private void Update()
@@ -154,18 +179,45 @@ public class GameManager : MonoBehaviour
                 crystalSpawnTimer = crystalSpawnInterval;
             }
         }
+        if (Input.GetKeyDown(KeyCode.L))  
+        {
+            Debug.Log("Manual trigger to load Level1");
+            LoadLevel1();
+        }
     }
 
     public void CollectCrystal()
     {
+        if (isCrystalBeingCollected) return;
+
+        isCrystalBeingCollected = true;
         collectedCrystals++;
         AddScore(crystalPoints);
         UpdateCrystalDisplay();
         isCrystalActive = false;
+
         if (collectedCrystals >= crystalsToNextLevel)
         {
-            LoadNextLevel();
+            LevelCleared();
         }
+
+        StartCoroutine(ResetCrystalCollectionFlag());
+    }
+
+    private IEnumerator ResetCrystalCollectionFlag()
+    {
+        yield return new WaitForSeconds(0.1f);
+        isCrystalBeingCollected = false;
+    }
+
+    private void LevelCleared()
+    {
+        Debug.Log("Level Cleared!");
+        snake.StopMovement();
+        levelClearedPanel.SetActive(true);
+
+        levelClearedMainMenuButton.gameObject.SetActive(true);
+        nextLevelButton.gameObject.SetActive(true);
     }
 
     private void TryAgain()
@@ -231,4 +283,18 @@ public class GameManager : MonoBehaviour
         AddScore(foodPoints);
     }
 
+    public void LoadLevel1()
+    {
+        Debug.Log("LoadLevel1 method called");
+        StartCoroutine(LoadLevel1Async());
+    }
+
+    private IEnumerator LoadLevel1Async()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1");
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+    }
 }
