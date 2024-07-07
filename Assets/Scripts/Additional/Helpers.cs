@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Helpers {
-	public static IEnumerator wait(float seconds) {
-		yield return new WaitForSeconds(seconds);
-	}
-
 	public static T[] populateArray<T>(T[] arr, T value) {
 		for (int i = 0; i < arr.Length; i++) {
 			arr[i] = value;
@@ -20,4 +16,14 @@ public static class Helpers {
         arr2.CopyTo(outArr, arr1.Length);
         return outArr;
     }
+
+	public static string GetArg(string name) {
+		var args = System.Environment.GetCommandLineArgs();
+		for (int i = 0; i < args.Length; i++) {
+			if (args[i] == name && args.Length > i + 1) {
+				return args[i + 1];
+			}
+		}
+		return null;
+	}
 }
