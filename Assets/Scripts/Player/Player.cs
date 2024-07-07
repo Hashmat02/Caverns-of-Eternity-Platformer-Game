@@ -9,6 +9,8 @@ public class Player : MonoBehaviour {
 	public bool isInvincible { get; private set; } = false;
 	public bool isShielded { get; private set; } = false;
 	private Vector3 _savedPosition;
+	private Vector3 _checkpointPos;
+	private bool _checkpointSet;
 	private float _timer = 0f;
 	private PlayerController _controller;
 
@@ -30,7 +32,7 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update() {
-		onKillHit = isShielded ? shieldBreak :  triggerDeath;
+		onKillHit = isShielded ? shieldBreak : triggerDeath;
 	}
 
 	void FixedUpdate() {
@@ -45,6 +47,10 @@ public class Player : MonoBehaviour {
 	public void triggerDeath() {
 		lives--;
 		if (lives <= 0) {
+			if (_checkpointSet && Cheats.instance.cheats[Cheats.CheatTypes.CHECKPOINT]) {
+				revertToCheckpointPos();
+				return;
+			}
 			UIManager.instance.GameOver();
 			return;
 		}
@@ -70,6 +76,10 @@ public class Player : MonoBehaviour {
 		lives += count;
 	}
 
+	public void setInvincibility(bool value) {
+		isInvincible = value;
+	}
+
 	public void triggerShield() {
 		isShielded = true;
 	}
@@ -77,5 +87,14 @@ public class Player : MonoBehaviour {
 	public void shieldBreak() {
 		isShielded = false;
 		_controller.forceJump = true;
+	}
+
+	public void setCheckpoint() {
+		_checkpointPos = transform.position;
+		_checkpointSet = true;
+	}
+
+	private void revertToCheckpointPos() {
+		transform.position = _checkpointPos;
 	}
 }

@@ -20,4 +20,13 @@ public static class Helpers {
         arr2.CopyTo(outArr, arr1.Length);
         return outArr;
     }
+	public static string GetArgs(string name) {
+		string[] args = System.Environment.GetCommandLineArgs();
+		for (int i = 0; i < args.Length; i++) {
+			if (args[i] == name && args.Length > i + 1) {
+				return args[i + 1];
+			}
+		}
+		return null;
+	}
 }
