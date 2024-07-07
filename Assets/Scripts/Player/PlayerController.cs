@@ -46,6 +46,9 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D _body;
     private PlatformCollision _collisionCheck;
 
+	private Animator _anim;
+	private SpriteRenderer _sprite;
+
 	public void multMaxVel(float multiplier) {
 		_maxVel *= multiplier;
 	}
@@ -71,6 +74,14 @@ public class PlayerController : MonoBehaviour {
             ErrorHandling.throwError("No PlatformCollision script found.");
         }
 		_defMaxVel = _maxVel;
+		_anim = GetComponent<Animator>();
+		if (!_anim) {
+			ErrorHandling.throwError("No Animator found.");
+		}
+		_sprite = GetComponent<SpriteRenderer>();
+		if (!_sprite) {
+			ErrorHandling.throwError("No Sprite Renderer found.");
+		}
     }
 
     void Start() {
@@ -80,6 +91,16 @@ public class PlayerController : MonoBehaviour {
 
     void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
+		if (_moveX != 0) {
+			_anim.SetBool("isWalking", true);
+		} else {
+			_anim.SetBool("isWalking", false);
+		}
+		if (_moveX > 0) {
+			_sprite.flipX = true;
+		} else if (_moveX < 0) {
+			_sprite.flipX = false;
+		}
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
 		_desiredJump = _collisionCheck.isGround ? jump : _collisionCheck.isWall ? wallJump : jump;
         _wantJump |= Input.GetButtonDown("Jump");
