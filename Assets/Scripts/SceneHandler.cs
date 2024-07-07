@@ -45,6 +45,12 @@ public class SceneHandler : MonoBehaviour
         SceneManager.LoadScene("Level2"); // Hardcoded for this example
     }
 
+    public static void GoToAchievements()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Constants.SCENE_ACHIEVEMENTS);
+    }
+
     public static void QuitGame()
     {
 #if UNITY_EDITOR

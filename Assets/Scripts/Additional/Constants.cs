@@ -5,6 +5,8 @@ static public class Constants {
     public const string SCENE_GAMEPLAY = "Level1";
     public const string SCENE_SHOP = "ShopScene";
     public const string SCENE_INVENTORY = "InventoryScene";
+    public const string SCENE_ACHIEVEMENTS = "Achievement";
+
 
     // Player Prefs
     public const int NUMBER_OF_LEVELS = 1;

@@ -5,8 +5,10 @@ using UnityEngine;
 public class CrystalsManager : MonoBehaviour {
     public static CrystalsManager instance;
     public static int crystalCount { get; private set; } = 0;
-	public delegate void OnCountChange();
-	public static event OnCountChange onCountChange;
+    public int totalCrystalsInLevel { get; private set; } = 0;
+
+    public delegate void OnCountChange();
+    public static event OnCountChange onCountChange;
 
     void Awake() {
 		if (instance && instance != this) {
@@ -17,10 +19,17 @@ public class CrystalsManager : MonoBehaviour {
 		loadCrystals();
     }
 
-	public void add(int i) {
-		crystalCount += i;
-		onCountChange?.Invoke();
-	}
+    void Start()
+    {
+        CountTotalCrystalsInLevel();
+    }
+
+    public void add(int i)
+    {
+        crystalCount += i;
+        onCountChange?.Invoke();
+        CheckForAchievements();
+    }
 
 	public void subtract(int i) {
 		crystalCount -= i;
@@ -37,15 +46,36 @@ public class CrystalsManager : MonoBehaviour {
 		onCountChange?.Invoke();
 	}
 
-	void loadCrystals() {
-		crystalCount = DataPersistenceManager.loadInt(Constants.PREF_CRYSTALS);
-	}
+    public void loadCrystals()
+    {
+        crystalCount = DataPersistenceManager.loadInt(Constants.PREF_CRYSTALS);
+        Debug.Log("Loaded Crystals: " + crystalCount);
+    }
 
-    void saveCrystals() {
+    public void saveCrystals()
+    {
         DataPersistenceManager.save(Constants.PREF_CRYSTALS, crystalCount);
     }
 
-	void OnDisable() {
-		saveCrystals();
-	}
+    public void OnDisable()
+    {
+        saveCrystals();
+    }
+
+    void CountTotalCrystalsInLevel()
+    {
+        totalCrystalsInLevel = GameObject.FindGameObjectsWithTag(Constants.TAG_COLLECTIBLE_CRYSTAL).Length;
+        Debug.Log("Total Crystals in Level: " + totalCrystalsInLevel);
+    }
+
+    void CheckForAchievements()
+    {
+        if (crystalCount >= totalCrystalsInLevel)
+        {
+            AchievementManager.instance.SetAchievement("AllCrystalsCollected", true);
+            Debug.Log("Achievement Unlocked: All Crystals Collected");
+        }
+    }
+
 }
+
