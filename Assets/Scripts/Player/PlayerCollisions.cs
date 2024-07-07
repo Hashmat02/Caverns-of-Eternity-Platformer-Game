@@ -8,7 +8,7 @@ public class PlayerCollisions : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collider) {
 		switch (collider.tag) {
 		case Constants.TAG_TRAP_KILLER:
-			UIManager.instance.GameOver();
+			Player.instance.onKillHit?.Invoke();
 			break;
 		case Constants.TAG_COLLECTIBLE_CRYSTAL:
 			onCollectible?.Invoke();

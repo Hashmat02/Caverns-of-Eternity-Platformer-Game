@@ -16,8 +16,9 @@ GameObject:
   - component: {fileID: 3636455856622371967}
   - component: {fileID: 2407719305617424868}
   - component: {fileID: 2456863224687861333}
-  - component: {fileID: 5891244107811496403}
+  - component: {fileID: 328663710127283323}
   - component: {fileID: 1713022584060617099}
+  - component: {fileID: -2056374166935297663}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Player
@@ -337,15 +338,16 @@ MonoBehaviour:
   _maxAccel: 40
   _maxAirAccel: 20
   _jumpHeight: 3
-  _maxAirJumps: 0
+  _maxJumps: 1
   _fallMult: 3
   _riseMult: 1.5
   _coyoteTime: 0.2
+  forceJump: 0
   _wallSlideMaxVel: 2
   _wallJumpClimb: {x: 5, y: 15}
   _wallJumpLeap: {x: 10, y: 10}
   _wallStickTime: 0.5
---- !u!114 &5891244107811496403
+--- !u!114 &328663710127283323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -371,3 +373,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxAngleWall: 0
   _maxAngleGround: 0
+--- !u!114 &-2056374166935297663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4449549673987557296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55a8327f3057fcb06b53721b357a993c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

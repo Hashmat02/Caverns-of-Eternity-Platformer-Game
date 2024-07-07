@@ -324,8 +324,6 @@ public class ShopManagerScript : MonoBehaviour
     {
         string inventoryJson = PlayerPrefs.GetString("Inventory", "{}");
         inventory = JsonConvert.DeserializeObject<Dictionary<int, int>>(inventoryJson);
-
-        CrystalsManager.instance.loadCrystals(); // Ensure crystals are loaded correctly
         UpdateCrystalsText(); // Update crystals display
     }
 

@@ -11,10 +11,11 @@ public class PlayerController : MonoBehaviour {
     private Vector2 _velocity;
     private float _moveX;
     private float _projectedVelX;
+	private float _defMaxVel;
 
     [Header("Jump Properties")]
     [SerializeField, Range(0.0f, 10.0f)] private float _jumpHeight = 3.0f;
-    [SerializeField, Range(0, 5)] private int _maxAirJumps = 1;
+    [SerializeField, Range(0, 5)] private int _maxJumps = 1;
     [SerializeField, Range(0.0f, 5.0f)] private float _fallMult = 3.0f;
     [SerializeField, Range(0.0f, 5.0f)] private float _riseMult = 1.5f;
     [SerializeField, Range(0.0f, 0.5f)] private float _coyoteTime = 0.2f;
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour {
     private bool _wantJump = false;
     private float _coyoteCounter;
     private int _jumpCount = 0;
+	public bool forceJump = false;
 
     [Header("Wall Interaction Properties")]
     [SerializeField, Range(0.0f, 5.0f)] private float _wallSlideMaxVel = 2.0f;
@@ -44,6 +46,21 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D _body;
     private PlatformCollision _collisionCheck;
 
+	public void multMaxVel(float multiplier) {
+		_maxVel *= multiplier;
+	}
+
+	public void addMaxJumps(int added) {
+		if (_maxJumps + added > 5) {
+			return;
+		}
+		_maxJumps += added;
+	}
+
+	public void revertMaxVel() {
+		_maxVel = _defMaxVel;
+	}
+
     void Awake() {
         _body = GetComponent<Rigidbody2D>();
         if (!_body) {
@@ -53,6 +70,7 @@ public class PlayerController : MonoBehaviour {
         if (!_collisionCheck) {
             ErrorHandling.throwError("No PlatformCollision script found.");
         }
+		_defMaxVel = _maxVel;
     }
 
     void Start() {
@@ -63,7 +81,7 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         _moveX = Input.GetAxisRaw("Horizontal");
         _projectedVelX = _moveX * Mathf.Max(_maxVel - _collisionCheck.friction, 0.0f);
-		_desiredJump = _collisionCheck.isGround ? jump : _collisionCheck.isWall ? wallJump : null;
+		_desiredJump = _collisionCheck.isGround ? jump : _collisionCheck.isWall ? wallJump : jump;
         _wantJump |= Input.GetButtonDown("Jump");
     }
 
@@ -105,6 +123,10 @@ public class PlayerController : MonoBehaviour {
         }
         #endregion
 
+		if (forceJump) {
+			forceJumpOnHit();
+		}
+
         // adjust gravity scale
         _body.gravityScale = _body.velocity.y == 0 ? Constants.DEF_GRAVITY_SCALE
             : _body.velocity.y > 0 ? _riseMult
@@ -128,7 +150,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     void jump() {
-        if (_coyoteCounter <= 0.0f && _jumpCount > _maxAirJumps) {
+        if (_coyoteCounter <= 0.0f && _jumpCount >= _maxJumps) {
             _wantJump = false;
             return;
         }
@@ -136,7 +158,16 @@ public class PlayerController : MonoBehaviour {
         _coyoteCounter = 0.0f;
         float jumpVel = Mathf.Sqrt(-2f * Physics2D.gravity.y * _jumpHeight);
         _velocity = new Vector2(_velocity.x, jumpVel);
+		if (!_collisionCheck.isGround && _maxJumps > 1) {
+			_maxJumps--;
+		}
     }
+
+	void forceJumpOnHit() {
+		float jumpVel = Mathf.Sqrt(-2f * Physics2D.gravity.y * _jumpHeight);
+		_velocity = new Vector2(-_velocity.x, jumpVel);
+		forceJump = false;
+	}
 
     void wallJump() {
         if (-_collisionCheck.contactNormal.x == _moveX) {

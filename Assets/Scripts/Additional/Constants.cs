@@ -6,13 +6,16 @@ static public class Constants {
     public const string SCENE_SHOP = "ShopScene";
     public const string SCENE_INVENTORY = "InventoryScene";
 
-
-
     // Player Prefs
     public const int NUMBER_OF_LEVELS = 1;
     public const string PREF_LEVEL_NUMBER = "LevelNumber";
     public const string PREF_LEVEL_STATES = "LevelStates";
     public const string PREF_CRYSTALS = "Crystals";
+	public const string PREF_POWERUPS_SPEED = "SpeedBoost";
+	public const string PREF_POWERUPS_SHIELD = "Shield";
+	public const string PREF_POWERUPS_REBIRTH = "CrystalRebirth";
+	public const string PREF_POWERUPS_JUMP = "DoubleJump";
+	public const string PREF_POWERUPS_RIDDLE = "RiddleGuide";
 
 	// Audio Mixer
 	public const int MIXER_GROUP_COUNT = 3;
@@ -36,4 +39,10 @@ static public class Constants {
     // Player Movement Parameters
 	public const float DEF_GRAVITY_SCALE = 1.0f;
     public const float PLAYER_GRAVITY = 10.0f; // acceleration
+
+	public const float PLAYER_POSITION_SAVE_TIMER = 5.0f; // seconds
+	public const float PLAYER_INVINCIBILITY_TIME = 3.0f; // seconds
+
+	// Powerupds
+	public const float POWERUPS_SPEED_DURATION = 10.0f; // seconds;
 }
