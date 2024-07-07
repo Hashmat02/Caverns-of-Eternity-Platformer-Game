@@ -29,7 +29,6 @@ public class Level2Door : MonoBehaviour
     {
         GameObject[] crystals = GameObject.FindGameObjectsWithTag("CollectibleCrystal");
         collectedCrystals = RequiredCrystals - crystals.Length;
-        Debug.Log("Current crystal count: " + collectedCrystals + "/" + RequiredCrystals);
 
         if (collectedCrystals >= RequiredCrystals && !isTransitioning)
         {
