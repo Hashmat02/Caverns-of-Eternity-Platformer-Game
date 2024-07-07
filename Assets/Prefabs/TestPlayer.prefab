@@ -37,7 +37,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.78, y: -0.61, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -234,7 +234,7 @@ MonoBehaviour:
   _maxVel: 4
   _maxAccel: 40
   _maxAirAccel: 20
-  _jumpHeight: 3
+  _jumpHeight: 5
   _maxJumps: 1
   _fallMult: 3
   _riseMult: 1.5
