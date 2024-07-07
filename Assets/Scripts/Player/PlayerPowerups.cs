@@ -68,9 +68,6 @@ public class PlayerPowerups : MonoBehaviour {
 	}
 
 	void checkPowerup(char c) {
-		if (!CharToKeyCode.dict.ContainsKey(c)) {
-			return;
-		}
 		KeyCode code = CharToKeyCode.dict[c];
 		if (!_powerupFunctionCalls.ContainsKey(code)) {
 			return;
